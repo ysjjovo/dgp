@@ -1,0 +1,10 @@
+
+    var comm = require('../../common')
+    eth = comm.eth
+    root = comm.root
+    var contract = new eth.Contract(comm.abi, null, {
+        from: root,
+        gasPrice: 20000000000,
+    })
+    contract.deploy({data: comm.bin}).then(
+    process.exit()
