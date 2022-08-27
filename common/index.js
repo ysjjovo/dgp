@@ -1,12 +1,32 @@
 var rfs = require('fs').readFileSync
 var artifactsDir = process.env.PROJECT_DIR + '/solidity/artifacts'
 var net = require('net')
+var root = process.env.ROOT_ADDR
 var Web3 = require('web3')
-var web3 = new Web3(process.env.IPC_PATH, net);
+var web3 = new Web3(process.env.IPC_PATH, net)
+var eth = web3.eth
+var bin = rfs(`${artifactsDir}/${process.env.CONTRACT}.bin`, 'utf-8')
+var abi = JSON.parse(rfs(`${artifactsDir}/${process.env.CONTRACT}.abi`, 'utf-8'))
+var contractAddr = rfs(`${artifactsDir}/CONTRACT_ADDR`).toString()
+console.log("contract addr:", contractAddr)
+
+var contract = new eth.Contract(abi, contractAddr, {
+    // from: root,
+    gasPrice: web3.utils.toWei('20', 'gwei'),
+    gasLimit: 21000000,
+    data: bin,
+})
+
+contract.events.Error({
+    fromBlock: 0
+}, function (error, event) { 
+    console.log("got err:", web3.utils.hexToAscii(event.returnValues.e))
+})
+
 module.exports = {
-    root: process.env.ROOT_ADDR,
+    artifactsDir: artifactsDir,
+    root: root,
     web3,
-    eth: web3.eth,
-    bin: rfs(`${artifactsDir}/${process.env.CONTRACT}.bin`, 'utf-8'),
-    abi: JSON.parse(rfs(`${artifactsDir}/${process.env.CONTRACT}.abi`, 'utf-8')),
+    eth,
+    contract: contract
 }

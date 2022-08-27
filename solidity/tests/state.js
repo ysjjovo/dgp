@@ -1,0 +1,12 @@
+(async function () {
+   var comm = require('../../common')
+   var r = await comm.contract.methods.totalSupply().call({from: comm.root})
+   console.log('totalSupply:', r)
+   r = await comm.contract.methods.balanceOf(comm.root).call({from: comm.root})
+   console.log('balance of root:', r)
+   r = await comm.contract.methods.ownerOf(0).call({from: comm.root})
+   console.log('ownerOf 0:', r)
+   r = await comm.contract.methods.tokensOfOwner(comm.root).call({from: comm.root})
+   console.log('root owns:', r)
+   process.exit()
+})()
