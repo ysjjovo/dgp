@@ -20,7 +20,12 @@ var contract = new eth.Contract(abi, contractAddr, {
 contract.events.Error({
     fromBlock: 0
 }, function (error, event) { 
-    console.log("got err:", web3.utils.hexToAscii(event.returnValues.e))
+    if(err) {
+        console.log("got err:", err)
+        if(event){
+            console.log("returnValues:", web3.utils.hexToAscii(event.returnValues.e))
+        }
+    }
 })
 
 module.exports = {
